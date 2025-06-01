@@ -104,7 +104,7 @@ public class WisataPanel extends JPanel {
         // FlowLayout lebih cocok untuk tampilan kartu yang bisa wrapping
         cardsContainerPanel.setLayout(new GridLayout(0, 2, 20, 20)); // 2 kolom, jarak antar kartu
         cardsContainerPanel.setBackground(Color.WHITE); // Latar belakang putih
-        cardsContainerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding keseluruhan
+        cardsContainerPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40)); // Padding keseluruhan
 
         scrollPane = new JScrollPane(cardsContainerPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Hanya scroll vertikal
