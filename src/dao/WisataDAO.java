@@ -5,7 +5,6 @@ import database.DatabaseManager;
 import model.Fasilitas;
 import model.Kategori;
 import model.Wisata;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -87,6 +86,14 @@ public class WisataDAO {
         Wisata wisata = new Wisata();
         try (Connection conn = DatabaseManager.getConnection()) {
             wisata.load(conn, id); // Menggunakan metode load dari Recordable/Wisata
+
+            // Penggunaan langsung kelas Fasilitas
+            List<Fasilitas> daftarFasilitas = wisata.getDaftarFasilitas(); // Pastikan Wisata punya getter ini
+            for (Fasilitas fasilitas :daftarFasilitas) {
+                System.out.println("Fasilitas: " + fasilitas.getNama());
+            }
+            
+
             return wisata;
         } catch (SQLException e) {
             if (e.getMessage().contains("tidak ditemukan")) {

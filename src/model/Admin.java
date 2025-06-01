@@ -73,6 +73,16 @@ public class Admin extends User {
         System.out.println("Admin " + this.getNama() + " berhasil menambah fasilitas: " + fasilitas.getNama());
     }
 
+    /**
+     * Contoh: Mendapatkan daftar nama destinasi wisata.
+     */
+    public void printDaftarWisata(List<Wisata> daftarWisata) {
+        System.out.println("Daftar Wisata:");
+        for (Wisata w : daftarWisata) {
+            System.out.println("- " + w.getNama());
+        }
+    }
+
     @Override
     public String toString() {
         return "Admin{" +

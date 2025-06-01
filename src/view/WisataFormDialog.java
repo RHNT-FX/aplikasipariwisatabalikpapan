@@ -207,6 +207,12 @@ public class WisataFormDialog extends JDialog {
     private void addListeners() {
         saveButton.addActionListener(e -> saveWisata());
         cancelButton.addActionListener(e -> dispose());
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Tombol Simpan ditekan. Event source: " + e.getSource());
+            }
+        });
     }
 
     private void saveWisata() {

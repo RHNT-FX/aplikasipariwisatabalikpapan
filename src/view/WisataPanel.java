@@ -39,6 +39,12 @@ public class WisataPanel extends JPanel {
         setLayout(new BorderLayout(10, 10)); // Border layout dengan jarak 10px
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding
 
+        // Penggunaan langsung kelas User
+        User currentUser = AuthManager.getCurrentUser();
+        if (currentUser != null) {
+            System.out.println("User login: " + currentUser.getUsername());
+        }
+
         initComponents();
         addListeners();
         loadWisataData(); // Memuat data saat panel pertama kali dibuka
