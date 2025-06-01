@@ -136,13 +136,13 @@ public class LoginFrame extends JFrame {
         ImageIcon palmIcon = null;
         try {
             // Memastikan gambar dimuat dari classpath, penting di VS Code
-            palmIcon = new ImageIcon(getClass().getResource("/resources/UserLoginSignin (1).png"));
+            palmIcon = new ImageIcon(getClass().getResource("/resources/palm.png"));
             // Skalakan gambar agar sesuai, jika perlu
             if (palmIcon.getImage() != null) {
                 Image originalImage = palmIcon.getImage();
                 // Atur skala sesuai keinginan, misalnya 30% dari ukuran aslinya
-                int scaledWidth = (int) (originalImage.getWidth(null) * 0.1);
-                int scaledHeight = (int) (originalImage.getHeight(null) * 0.1);
+                int scaledWidth = (int) (originalImage.getWidth(null) * 1);
+                int scaledHeight = (int) (originalImage.getHeight(null) * 2);
                 Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
                 palmIcon = new ImageIcon(scaledImage);
             }
@@ -170,7 +170,7 @@ public class LoginFrame extends JFrame {
         if (palmIcon != null) {
             // Sesuaikan posisi dan ukuran label pohon palem
             // Misalnya, letakkan di kiri bawah, ukurannya sesuai gambar
-            palmLabel.setBounds(0, 200, palmIcon.getIconWidth(), palmIcon.getIconHeight()); // X, Y, Width, Height
+            palmLabel.setBounds(-100, 200, palmIcon.getIconWidth(), palmIcon.getIconHeight()); // X, Y, Width, Height
             layeredPane.add(palmLabel, JLayeredPane.PALETTE_LAYER); // Letakkan di layer yang lebih tinggi
         }
         

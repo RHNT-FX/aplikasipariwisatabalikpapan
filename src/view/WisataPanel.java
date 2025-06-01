@@ -42,7 +42,7 @@ public class WisataPanel extends JPanel {
         // Penggunaan langsung kelas User
         User currentUser = AuthManager.getCurrentUser();
         if (currentUser != null) {
-            System.out.println("User login: " + currentUser.getUsername());
+            System.out.println("User login: " + currentUser.getNama());
         }
 
         initComponents();
@@ -102,8 +102,9 @@ public class WisataPanel extends JPanel {
         cardsContainerPanel = new JPanel();
         // Gunakan FlowLayout untuk menata kartu secara dinamis atau GridLayout jika ingin baris/kolom tetap
         // FlowLayout lebih cocok untuk tampilan kartu yang bisa wrapping
-        cardsContainerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20)); // Jarak antar kartu
+        cardsContainerPanel.setLayout(new GridLayout(0, 2, 20, 20)); // 2 kolom, jarak antar kartu
         cardsContainerPanel.setBackground(Color.WHITE); // Latar belakang putih
+        cardsContainerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding keseluruhan
 
         scrollPane = new JScrollPane(cardsContainerPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Hanya scroll vertikal
