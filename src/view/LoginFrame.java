@@ -200,8 +200,7 @@ public class LoginFrame extends JFrame {
         signUpLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                JOptionPane.showMessageDialog(LoginFrame.this, "Fungsionalitas Sign Up belum diimplementasikan.", "Informasi", JOptionPane.INFORMATION_MESSAGE);
-                // Di sini nanti bisa membuka dialog atau frame registrasi baru
+                new RegisterPanel().setVisible(true);
             }
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {

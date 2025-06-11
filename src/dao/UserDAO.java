@@ -140,4 +140,24 @@ public class UserDAO {
             return authenticatedUser; // Kembalikan objek User biasa atau null
         }
     }
+        /**
+     * Mendaftarkan pengguna baru ke database.
+     * @param user Objek User yang berisi data registrasi (nama, email, password, role).
+     * @return true jika pendaftaran berhasil, false jika gagal.
+     */
+    public boolean registerUser(User user) {
+        String sql = "INSERT INTO Users (nama, email, password, role) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseManager.getConnection(); 
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getNama());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(4, user.getRole());
+            stmt.executeUpdate();
+        return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        return false;
+        }
+    }
 }
