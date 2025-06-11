@@ -1,132 +1,45 @@
-// src/dao/WisataDAO.java
 package dao;
 
 import database.DatabaseManager;
-import model.Fasilitas;
-import model.Kategori;
+import model.Kategori; // Import kelas Kategori
 import model.Wisata;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO untuk mengelola operasi CRUD (Create, Read, Update, Delete)
+ * yang berkaitan dengan entitas Wisata.
+ */
 public class WisataDAO {
 
     /**
-     * Menambahkan destinasi wisata baru ke database.
-     * @param wisata Objek Wisata yang akan ditambahkan.
-     * @throws SQLException Jika terjadi kesalahan SQL.
+     * Mengambil semua data wisata dari database.
+     * PERBAIKAN: Melakukan JOIN dengan tabel Kategori untuk mendapatkan data kategori secara lengkap.
+     * @return Sebuah List yang berisi semua objek Wisata.
      */
-    public void addWisata(Wisata wisata) throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            conn.setAutoCommit(false); // Mulai transaksi
-            try {
-                wisata.save(conn); // Menggunakan metode save dari Recordable/Wisata
-                conn.commit(); // Commit transaksi jika berhasil
-            } catch (SQLException e) {
-                conn.rollback(); // Rollback jika ada kesalahan
-                throw e;
-            } finally {
-                conn.setAutoCommit(true); // Kembalikan ke auto-commit
-            }
-        }
-    }
-
-    /**
-     * Memperbarui data destinasi wisata yang sudah ada di database.
-     * @param wisata Objek Wisata yang akan diperbarui (ID harus sudah ada).
-     * @throws SQLException Jika terjadi kesalahan SQL.
-     */
-    public void updateWisata(Wisata wisata) throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            conn.setAutoCommit(false); // Mulai transaksi
-            try {
-                wisata.update(conn); // Menggunakan metode update dari Recordable/Wisata
-                conn.commit(); // Commit transaksi jika berhasil
-            } catch (SQLException e) {
-                conn.rollback(); // Rollback jika ada kesalahan
-                throw e;
-            } finally {
-                conn.setAutoCommit(true); // Kembalikan ke auto-commit
-            }
-        }
-    }
-
-    /**
-     * Menghapus destinasi wisata dari database berdasarkan ID.
-     * @param wisata Objek Wisata yang akan dihapus (ID harus sudah ada).
-     * @throws SQLException Jika terjadi kesalahan SQL.
-     */
-    public void deleteWisata(Wisata wisata) throws SQLException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            conn.setAutoCommit(false); // Mulai transaksi
-            try {
-                wisata.delete(conn); // Menggunakan metode delete dari Recordable/Wisata
-                conn.commit(); // Commit transaksi jika berhasil
-            } catch (SQLException e) {
-                conn.rollback(); // Rollback jika ada kesalahan
-                throw e;
-            } finally {
-                conn.setAutoCommit(true); // Kembalikan ke auto-commit
-            }
-        }
-    }
-
-    /**
-     * Mengambil destinasi wisata dari database berdasarkan ID-nya.
-     * Memuat juga Kategori dan Fasilitas terkait.
-     * @param id ID wisata yang dicari.
-     * @return Objek Wisata jika ditemukan, null jika tidak.
-     * @throws SQLException Jika terjadi kesalahan SQL.
-     */
-    public Wisata getWisataById(int id) throws SQLException {
-        Wisata wisata = new Wisata();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            wisata.load(conn, id); // Menggunakan metode load dari Recordable/Wisata
-
-            // Penggunaan langsung kelas Fasilitas
-            List<Fasilitas> daftarFasilitas = wisata.getDaftarFasilitas(); // Pastikan Wisata punya getter ini
-            for (Fasilitas fasilitas :daftarFasilitas) {
-                System.out.println("Fasilitas: " + fasilitas.getNama());
-            }
-            
-
-            return wisata;
-        } catch (SQLException e) {
-            if (e.getMessage().contains("tidak ditemukan")) {
-                return null;
-            }
-            throw e;
-        }
-    }
-
-    /**
-     * Mengambil semua destinasi wisata dari database.
-     * Memuat juga Kategori dan Fasilitas terkait untuk setiap wisata.
-     * @return List objek Wisata.
-     * @throws SQLException Jika terjadi kesalahan SQL.
-     */
-    public List<Wisata> getAllWisata() throws SQLException {
-        List<Wisata> daftarWisata = new ArrayList<>();
-        String sql = "SELECT w.id, w.nama, w.deskripsi, w.lokasi, w.harga_tiket, w.jam_operasional, " +
-                     "k.id AS kategori_id, k.nama AS kategori_nama " +
-                     "FROM Wisata w LEFT JOIN Kategori k ON w.kategori_id = k.id " +
-                     "ORDER BY w.nama";
+    public List<Wisata> getAllWisata() {
+        List<Wisata> wisataList = new ArrayList<>();
+        // PERBAIKAN: SQL diubah untuk JOIN dengan tabel Kategori
+        String sql = "SELECT w.*, k.id AS kategori_id, k.nama AS kategori_nama " +
+                     "FROM Wisata w LEFT JOIN Kategori k ON w.kategori_id = k.id";
 
         try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
+                // PERBAIKAN: Membuat objek Kategori terlebih dahulu
                 Kategori kategori = null;
                 int kategoriId = rs.getInt("kategori_id");
-                if (!rs.wasNull()) { // Cek apakah kategori_id tidak NULL
+                if (!rs.wasNull()) { // Cek jika wisata punya kategori
                     kategori = new Kategori(kategoriId, rs.getString("kategori_nama"));
                 }
 
+                // PERBAIKAN: Membuat objek Wisata dengan objek Kategori, bukan int
                 Wisata wisata = new Wisata(
                     rs.getInt("id"),
                     rs.getString("nama"),
@@ -134,45 +47,45 @@ public class WisataDAO {
                     rs.getString("lokasi"),
                     rs.getDouble("harga_tiket"),
                     rs.getString("jam_operasional"),
-                    kategori
+                    kategori // Menggunakan objek Kategori yang sudah dibuat
                 );
-                // Muat fasilitas untuk setiap wisata
-                wisata.load(conn, wisata.getId()); // Menggunakan metode load untuk melengkapi fasilitas
-                daftarWisata.add(wisata);
+                wisataList.add(wisata);
             }
+        } catch (SQLException e) {
+            System.err.println("Error saat mengambil semua data wisata: " + e.getMessage());
+            e.printStackTrace();
         }
-        return daftarWisata;
+        return wisataList;
     }
-
+    
     /**
-     * Mencari destinasi wisata berdasarkan nama atau deskripsi.
-     * @param keyword Kata kunci pencarian.
-     * @return List objek Wisata yang cocok.
-     * @throws SQLException Jika terjadi kesalahan SQL.
+     * Mencari data wisata berdasarkan kata kunci pada nama.
+     * Sama seperti di atas, metode ini juga diubah untuk menyertakan data Kategori.
+     * @param keyword Kata kunci untuk pencarian.
+     * @return Sebuah List yang berisi objek Wisata yang cocok dengan kriteria.
      */
-    public List<Wisata> searchWisata(String keyword) throws SQLException {
-        List<Wisata> hasilPencarian = new ArrayList<>();
-        String sql = "SELECT w.id, w.nama, w.deskripsi, w.lokasi, w.harga_tiket, w.jam_operasional, " +
-                     "k.id AS kategori_id, k.nama AS kategori_nama " +
+    public List<Wisata> searchWisataByName(String keyword) {
+        List<Wisata> wisataList = new ArrayList<>();
+        // PERBAIKAN: SQL diubah untuk JOIN dengan tabel Kategori
+        String sql = "SELECT w.*, k.id AS kategori_id, k.nama AS kategori_nama " +
                      "FROM Wisata w LEFT JOIN Kategori k ON w.kategori_id = k.id " +
-                     "WHERE w.nama LIKE ? OR w.deskripsi LIKE ? OR w.lokasi LIKE ? " +
-                     "ORDER BY w.nama";
+                     "WHERE w.nama LIKE ?";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            String likeKeyword = "%" + keyword + "%";
-            pstmt.setString(1, likeKeyword);
-            pstmt.setString(2, likeKeyword);
-            pstmt.setString(3, likeKeyword);
-
+            
+            pstmt.setString(1, "%" + keyword + "%");
+            
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
+                     // PERBAIKAN: Membuat objek Kategori terlebih dahulu
                     Kategori kategori = null;
                     int kategoriId = rs.getInt("kategori_id");
                     if (!rs.wasNull()) {
                         kategori = new Kategori(kategoriId, rs.getString("kategori_nama"));
                     }
 
+                    // PERBAIKAN: Membuat objek Wisata dengan objek Kategori
                     Wisata wisata = new Wisata(
                         rs.getInt("id"),
                         rs.getString("nama"),
@@ -182,11 +95,13 @@ public class WisataDAO {
                         rs.getString("jam_operasional"),
                         kategori
                     );
-                    wisata.load(conn, wisata.getId()); // Muat fasilitas
-                    hasilPencarian.add(wisata);
+                    wisataList.add(wisata);
                 }
             }
+        } catch (SQLException e) {
+            System.err.println("Error saat mencari data wisata: " + e.getMessage());
+            e.printStackTrace();
         }
-        return hasilPencarian;
+        return wisataList;
     }
 }
