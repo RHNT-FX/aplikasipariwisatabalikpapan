@@ -1,4 +1,3 @@
-// src/view/WisataFormDialog.java
 package view;
 
 import dao.FasilitasDAO;
@@ -16,13 +15,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Dialog untuk menambah atau mengedit data destinasi wisata.
- * Ini adalah contoh "Form Input" dari proposal.
- */
 public class WisataFormDialog extends JDialog {
 
-    private Wisata wisata; // Objek wisata yang sedang diedit (null jika baru)
+    private Wisata wisata;
     private boolean dataSaved = false;
 
     private JTextField namaField, lokasiField, jamOperasionalField;
@@ -30,7 +25,7 @@ public class WisataFormDialog extends JDialog {
     private JTextField hargaTiketField;
     private JComboBox<Kategori> kategoriComboBox;
     private JList<Fasilitas> fasilitasList;
-    private DefaultListModel<Fasilitas> fasilitasListModel; // Model untuk JList
+    private DefaultListModel<Fasilitas> fasilitasListModel;
     private JButton saveButton, cancelButton;
 
     private KategoriDAO kategoriDAO;
@@ -39,7 +34,7 @@ public class WisataFormDialog extends JDialog {
 
     public WisataFormDialog(Frame owner, boolean modal, Wisata wisataToEdit) {
         super(owner, modal);
-        this.wisata = wisataToEdit; // Jika null, ini adalah operasi tambah
+        this.wisata = wisataToEdit;
         kategoriDAO = new KategoriDAO();
         fasilitasDAO = new FasilitasDAO();
         wisataDAO = new WisataDAO();
@@ -50,7 +45,7 @@ public class WisataFormDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         initComponents();
-        populateForm(); // Isi form jika sedang mode edit
+        populateForm();
         addListeners();
     }
 
@@ -64,7 +59,6 @@ public class WisataFormDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Baris 0: Nama
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(new JLabel("Nama Destinasi:"), gbc);
@@ -72,7 +66,6 @@ public class WisataFormDialog extends JDialog {
         namaField = new JTextField(30);
         formPanel.add(namaField, gbc);
 
-        // Baris 1: Lokasi
         gbc.gridx = 0;
         gbc.gridy = 1;
         formPanel.add(new JLabel("Lokasi:"), gbc);
@@ -80,7 +73,6 @@ public class WisataFormDialog extends JDialog {
         lokasiField = new JTextField(30);
         formPanel.add(lokasiField, gbc);
 
-        // Baris 2: Harga Tiket
         gbc.gridx = 0;
         gbc.gridy = 2;
         formPanel.add(new JLabel("Harga Tiket:"), gbc);
@@ -88,7 +80,6 @@ public class WisataFormDialog extends JDialog {
         hargaTiketField = new JTextField(30);
         formPanel.add(hargaTiketField, gbc);
 
-        // Baris 3: Jam Operasional
         gbc.gridx = 0;
         gbc.gridy = 3;
         formPanel.add(new JLabel("Jam Operasional:"), gbc);
@@ -96,46 +87,42 @@ public class WisataFormDialog extends JDialog {
         jamOperasionalField = new JTextField(30);
         formPanel.add(jamOperasionalField, gbc);
 
-        // Baris 4: Kategori (ComboBox)
         gbc.gridx = 0;
         gbc.gridy = 4;
         formPanel.add(new JLabel("Kategori:"), gbc);
         gbc.gridx = 1;
         kategoriComboBox = new JComboBox<>();
-        loadKategoriIntoComboBox(); // Muat kategori dari DB
+        loadKategoriIntoComboBox();
         formPanel.add(kategoriComboBox, gbc);
 
-        // Baris 5: Deskripsi (TextArea)
         gbc.gridx = 0;
         gbc.gridy = 5;
         formPanel.add(new JLabel("Deskripsi:"), gbc);
         gbc.gridx = 1;
-        gbc.weighty = 1.0; // Membuat text area membesar secara vertikal
-        deskripsiArea = new JTextArea(5, 30); // 5 baris, 30 kolom
+        gbc.weighty = 1.0;
+        deskripsiArea = new JTextArea(5, 30);
         deskripsiArea.setLineWrap(true);
         deskripsiArea.setWrapStyleWord(true);
         JScrollPane deskripsiScrollPane = new JScrollPane(deskripsiArea);
         formPanel.add(deskripsiScrollPane, gbc);
-        gbc.weighty = 0; // Reset weighty
+        gbc.weighty = 0;
 
-        // Baris 6: Fasilitas (JList dengan multiple selection)
         gbc.gridx = 0;
         gbc.gridy = 6;
-        gbc.anchor = GridBagConstraints.NORTHWEST; // Anchor ke kiri atas
+        gbc.anchor = GridBagConstraints.NORTHWEST;
         formPanel.add(new JLabel("Fasilitas:"), gbc);
         gbc.gridx = 1;
         gbc.weighty = 1.0;
         fasilitasListModel = new DefaultListModel<>();
         fasilitasList = new JList<>(fasilitasListModel);
         fasilitasList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        loadFasilitasIntoList(); // Muat fasilitas dari DB
+        loadFasilitasIntoList();
         JScrollPane fasilitasScrollPane = new JScrollPane(fasilitasList);
         formPanel.add(fasilitasScrollPane, gbc);
-        gbc.weighty = 0; // Reset weighty
+        gbc.weighty = 0;
 
         add(formPanel, BorderLayout.CENTER);
 
-        // --- Tombol Aksi ---
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         saveButton = new JButton("Simpan");
         cancelButton = new JButton("Batal");
@@ -147,7 +134,7 @@ public class WisataFormDialog extends JDialog {
     private void loadKategoriIntoComboBox() {
         try {
             List<Kategori> kategoriList = kategoriDAO.getAllKategori();
-            kategoriComboBox.addItem(null); // Opsi "Tidak Ada Kategori"
+            kategoriComboBox.addItem(null);
             for (Kategori kat : kategoriList) {
                 kategoriComboBox.addItem(kat);
             }
@@ -170,14 +157,13 @@ public class WisataFormDialog extends JDialog {
     }
 
     private void populateForm() {
-        if (wisata != null) { // Jika dalam mode edit
+        if (wisata != null) {
             namaField.setText(wisata.getNama());
             lokasiField.setText(wisata.getLokasi());
             hargaTiketField.setText(String.valueOf(wisata.getHargaTiket()));
             jamOperasionalField.setText(wisata.getJamOperasional());
             deskripsiArea.setText(wisata.getDeskripsi());
 
-            // Pilih kategori di ComboBox
             if (wisata.getKategori() != null) {
                 for (int i = 0; i < kategoriComboBox.getItemCount(); i++) {
                     Kategori item = kategoriComboBox.getItemAt(i);
@@ -188,7 +174,6 @@ public class WisataFormDialog extends JDialog {
                 }
             }
 
-            // Pilih fasilitas di JList
             List<Integer> selectedFasilitasIndices = new ArrayList<>();
             for (int i = 0; i < fasilitasListModel.getSize(); i++) {
                 Fasilitas currentFasilitasInList = fasilitasListModel.getElementAt(i);
@@ -216,7 +201,6 @@ public class WisataFormDialog extends JDialog {
     }
 
     private void saveWisata() {
-        // --- Validasi Input (Skenario Error Input Validasi) ---
         String nama = namaField.getText().trim();
         String lokasi = lokasiField.getText().trim();
         String jamOperasional = jamOperasionalField.getText().trim();
@@ -242,8 +226,7 @@ public class WisataFormDialog extends JDialog {
         Kategori selectedKategori = (Kategori) kategoriComboBox.getSelectedItem();
         List<Fasilitas> selectedFasilitas = fasilitasList.getSelectedValuesList();
 
-        // --- Proses Simpan/Update ---
-        if (wisata == null) { // Mode Tambah
+        if (wisata == null) {
             wisata = new Wisata();
         }
         wisata.setNama(nama);
@@ -252,22 +235,21 @@ public class WisataFormDialog extends JDialog {
         wisata.setJamOperasional(jamOperasional);
         wisata.setDeskripsi(deskripsi);
         wisata.setKategori(selectedKategori);
-        wisata.setDaftarFasilitas(selectedFasilitas); // Set daftar fasilitas yang baru dipilih
+        wisata.setDaftarFasilitas(selectedFasilitas);
 
         try {
-            if (wisata.getId() == 0) { // Baru
+            if (wisata.getId() == 0) {
                 wisataDAO.addWisata(wisata);
                 JOptionPane.showMessageDialog(this, "Destinasi wisata berhasil ditambahkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-            } else { // Update
+            } else {
                 wisataDAO.updateWisata(wisata);
                 JOptionPane.showMessageDialog(this, "Destinasi wisata berhasil diperbarui.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             }
             dataSaved = true;
-            dispose(); // Tutup dialog setelah berhasil
+            dispose();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan database saat menyimpan: " + ex.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace(); // Log error untuk debugging
-            // Skenario Error Operasi Basis Data
+            ex.printStackTrace();
         }
     }
 

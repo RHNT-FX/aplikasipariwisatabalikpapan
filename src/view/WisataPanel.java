@@ -14,8 +14,6 @@ public class WisataPanel extends JPanel {
     private JPanel wisataListPanel;
     private WisataDAO wisataDAO;
     private MainFrame mainFrame;
-    
-    // Komponen untuk pencarian
     private JTextField searchField;
     private JButton searchButton;
 
@@ -26,7 +24,6 @@ public class WisataPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Membuat panel pencarian
         JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
         searchField = new JTextField();
         searchButton = new JButton("Cari");
@@ -35,22 +32,19 @@ public class WisataPanel extends JPanel {
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(searchButton, BorderLayout.EAST);
         
-        // Menambahkan panel pencarian ke bagian atas (NORTH)
         add(searchPanel, BorderLayout.NORTH);
 
         wisataListPanel = new JPanel();
-        wisataListPanel.setLayout(new GridLayout(0, 3, 10, 10)); // 3 kolom, jarak 10px
-        
+        wisataListPanel.setLayout(new GridLayout(0, 3, 10, 10)); 
+
         JScrollPane scrollPane = new JScrollPane(wisataListPanel);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Menambahkan listener untuk tombol cari
         searchButton.addActionListener(e -> performSearch());
         
-        // Juga cari saat menekan Enter di kolom search
         searchField.addActionListener(e -> performSearch());
 
-        loadAllWisata(); // Memuat semua wisata saat panel pertama kali dibuka
+        loadAllWisata(); 
     }
 
     private void performSearch() {
@@ -72,7 +66,6 @@ public class WisataPanel extends JPanel {
         }
     }
 
-    // Metode baru untuk menampilkan data (agar tidak duplikat kode)
     private void updateWisataDisplay(List<Wisata> wisataList) {
         wisataListPanel.removeAll();
 
@@ -96,7 +89,6 @@ public class WisataPanel extends JPanel {
         wisataListPanel.repaint();
     }
     
-    // Metode baru untuk menangani error database
     private void handleDatabaseError(Exception e) {
         wisataListPanel.removeAll();
         wisataListPanel.setLayout(new BorderLayout());

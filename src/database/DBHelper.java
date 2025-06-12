@@ -20,7 +20,6 @@ public class DBHelper {
     public static void initDB() {
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
 
-            // 1. Tabel Users
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +30,6 @@ public class DBHelper {
                 );
             """);
 
-            // 2. Tabel Kategori
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS kategori (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +37,6 @@ public class DBHelper {
                 );
             """);
 
-            // 3. Tabel Wisata
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS wisata (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +50,6 @@ public class DBHelper {
                 );
             """);
 
-            // 4. Tabel Fasilitas
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS fasilitas (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,7 +57,6 @@ public class DBHelper {
                 );
             """);
 
-            // 5. Tabel Relasi Wisata-Fasilitas
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS wisata_fasilitas (
                     wisataId INTEGER,
@@ -72,7 +67,6 @@ public class DBHelper {
                 );
             """);
 
-            // Seed data kategori
             stmt.executeUpdate("""
                 INSERT OR IGNORE INTO kategori (id, nama) VALUES
                 (1, 'Alam'),
@@ -80,7 +74,6 @@ public class DBHelper {
                 (3, 'Kuliner');
             """);
 
-            // Seed data fasilitas
             stmt.executeUpdate("""
                 INSERT OR IGNORE INTO fasilitas (id, nama) VALUES
                 (1, 'Parkir'),
@@ -89,14 +82,12 @@ public class DBHelper {
                 (4, 'Wi-Fi');
             """);
 
-            // Seed data user
             stmt.executeUpdate("""
                 INSERT OR IGNORE INTO users (id, nama, email, password, role) VALUES
                 (1, 'Admin Balikpapan', 'admin@balikpapan.go.id', 'admin123', 'admin'),
                 (2, 'Pengunjung 1', 'user1@gmail.com', 'user123', 'user');
             """);
 
-            // Seed data wisata
             stmt.executeUpdate("""
                 INSERT OR IGNORE INTO wisata (id, nama, lokasi, deskripsi, hargaTiket, jamOperasional, kategoriId) VALUES
                 (1, 'Pantai Kemala', 'Jl. Jendral Sudirman', 'Pantai dengan pasir putih dan sunset yang indah.', 10000, '08:00 - 18:00', 1),
@@ -104,7 +95,6 @@ public class DBHelper {
                 (3, 'Kampung Atas Air', 'Margasari', 'Pemukiman terapung khas Balikpapan.', 5000, '09:00 - 17:00', 2);
             """);
 
-            // Seed data relasi wisata-fasilitas
             stmt.executeUpdate("""
                 INSERT OR IGNORE INTO wisata_fasilitas (wisataId, fasilitasId) VALUES
                 (1, 1), (1, 2), (1, 3),

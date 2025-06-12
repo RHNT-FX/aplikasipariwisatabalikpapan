@@ -1,4 +1,3 @@
-// src/view/FasilitasPanel.java
 package view;
 
 import dao.FasilitasDAO;
@@ -30,7 +29,6 @@ public class FasilitasPanel extends JPanel {
     }
 
     private void initComponents() {
-        // Input form untuk tambah/edit
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         inputPanel.add(new JLabel("Nama Fasilitas:"));
         namaFasilitasField = new JTextField(20);
@@ -46,7 +44,6 @@ public class FasilitasPanel extends JPanel {
 
         add(inputPanel, BorderLayout.NORTH);
 
-        // Tabel untuk menampilkan fasilitas
         tableModel = new DefaultTableModel(new Object[]{"ID", "Nama Fasilitas"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -126,7 +123,6 @@ public class FasilitasPanel extends JPanel {
         try {
             Fasilitas fasilitasToUpdate = fasilitasDAO.getFasilitasById(id);
             if (fasilitasToUpdate != null) {
-                // Cek duplikasi nama jika nama berubah dan nama baru sudah ada untuk fasilitas lain
                 Fasilitas existingFasilitas = fasilitasDAO.getFasilitasByNama(namaBaru);
                 if (existingFasilitas != null && existingFasilitas.getId() != id) {
                     JOptionPane.showMessageDialog(this, "Fasilitas dengan nama tersebut sudah ada.", "Duplikasi Data", JOptionPane.WARNING_MESSAGE);

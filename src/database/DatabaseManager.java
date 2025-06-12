@@ -11,10 +11,6 @@ public class DatabaseManager {
 
     private static final String URL = "jdbc:sqlite:pariwisata_balikpapan.db";
 
-    /**
-     * Mendapatkan koneksi ke database.
-     * PERBAIKAN: Memuat driver secara manual untuk memastikan selalu ditemukan.
-     */
     public static Connection getConnection() throws SQLException {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -26,18 +22,12 @@ public class DatabaseManager {
         return DriverManager.getConnection(URL);
     }
 
-    /**
-     * Membuat semua tabel yang diperlukan dalam database.
-     * PERBAIKAN: Menggunakan transaksi untuk memastikan semua tabel dibuat atau tidak sama sekali.
-     */
     public static void createTables() {
         try (Connection conn = getConnection()) {
-            // Memulai mode transaksi
             conn.setAutoCommit(false);
 
             try (Statement stmt = conn.createStatement()) {
 
-                // PERBAIKAN: SQL menggunakan Text Blocks agar lebih mudah dibaca.
                 stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,7 +80,6 @@ public class DatabaseManager {
                 """);
                 System.out.println("Tabel 'Wisata_Fasilitas' berhasil dibuat atau sudah ada.");
 
-                // KODE BARU: SQL untuk membuat tabel Ratings
                 stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Ratings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -105,21 +94,18 @@ public class DatabaseManager {
                 """);
                 System.out.println("Tabel 'Ratings' berhasil dibuat atau sudah ada.");
 
-
                 if (!isUserExist(conn, "admin@aplikasi.com")) {
                     stmt.executeUpdate("INSERT INTO Users (nama, email, password, role) VALUES ('Admin Utama', 'admin@aplikasi.com', 'admin123', 'admin');");
                     System.out.println("User Admin default berhasil ditambahkan.");
                 }
 
-                // Jika semua berhasil, simpan perubahan
                 conn.commit();
                 System.out.println("Transaksi pembuatan tabel berhasil.");
 
             } catch (SQLException e) {
-                // Jika ada error, batalkan semua perubahan
                 System.err.println("Terjadi error saat membuat tabel, transaksi di-rollback.");
                 conn.rollback();
-                throw e; // Lemparkan lagi errornya agar bisa terlihat
+                throw e;
             }
 
         } catch (SQLException e) {

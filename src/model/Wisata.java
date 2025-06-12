@@ -1,4 +1,3 @@
-// src/model/Wisata.java
 package model;
 
 import java.sql.Connection;
@@ -10,12 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Kelas utama untuk merepresentasikan Destinasi Pariwisata.
- * Menyimpan data seperti nama, deskripsi, lokasi, harga tiket, jam operasional,
- * dan terhubung dengan Kategori serta Fasilitas[cite: 29, 30].
- * Menerapkan enkapsulasi dan mengimplementasikan Recordable.
- */
 public class Wisata implements Recordable {
     private int id;
     private String nama;
@@ -23,8 +16,8 @@ public class Wisata implements Recordable {
     private String lokasi;
     private double hargaTiket;
     private String jamOperasional;
-    private Kategori kategori; // Objek Kategori terkait
-    private List<Fasilitas> daftarFasilitas; // Daftar fasilitas yang tersedia
+    private Kategori kategori;
+    private List<Fasilitas> daftarFasilitas;
 
     public Wisata() {
         this.daftarFasilitas = new ArrayList<>();
@@ -42,7 +35,6 @@ public class Wisata implements Recordable {
         this.daftarFasilitas = new ArrayList<>();
     }
 
-    // --- Getter dan Setter (Enkapsulasi) ---
     @Override
     public int getId() {
         return id;
@@ -119,7 +111,6 @@ public class Wisata implements Recordable {
         this.daftarFasilitas.remove(fasilitas);
     }
 
-    // --- Implementasi Recordable ---
     @Override
     public void save(Connection conn) throws SQLException {
         String sql = "INSERT INTO Wisata (nama, deskripsi, lokasi, harga_tiket, jam_operasional, kategori_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -129,7 +120,7 @@ public class Wisata implements Recordable {
             pstmt.setString(3, this.lokasi);
             pstmt.setDouble(4, this.hargaTiket);
             pstmt.setString(5, this.jamOperasional);
-            pstmt.setInt(6, (this.kategori != null) ? this.kategori.getId() : null); // Bisa null jika kategori belum dipilih
+            pstmt.setInt(6, (this.kategori != null) ? this.kategori.getId() : null);
             pstmt.executeUpdate();
 
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
@@ -137,7 +128,7 @@ public class Wisata implements Recordable {
                     this.id = rs.getInt(1);
                 }
             }
-            saveFasilitasRelasi(conn); // Simpan relasi fasilitas setelah wisata tersimpan
+            saveFasilitasRelasi(conn);
         }
     }
 
@@ -153,20 +144,18 @@ public class Wisata implements Recordable {
             pstmt.setInt(6, (this.kategori != null) ? this.kategori.getId() : null);
             pstmt.setInt(7, this.id);
             pstmt.executeUpdate();
-            updateFasilitasRelasi(conn); // Perbarui relasi fasilitas
+            updateFasilitasRelasi(conn);
         }
     }
 
     @Override
     public void delete(Connection conn) throws SQLException {
-        // Hapus relasi di tabel Wisata_Fasilitas terlebih dahulu
         String deleteFasilitasSql = "DELETE FROM Wisata_Fasilitas WHERE wisata_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(deleteFasilitasSql)) {
             pstmt.setInt(1, this.id);
             pstmt.executeUpdate();
         }
 
-        // Kemudian hapus wisata itu sendiri
         String deleteWisataSql = "DELETE FROM Wisata WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(deleteWisataSql)) {
             pstmt.setInt(1, this.id);
@@ -192,14 +181,14 @@ public class Wisata implements Recordable {
                     this.jamOperasional = rs.getString("jam_operasional");
 
                     int kategoriId = rs.getInt("kategori_id");
-                    if (!rs.wasNull()) { // Jika ada kategori yang terhubung
+                    if (!rs.wasNull()) {
                         String kategoriNama = rs.getString("kategori_nama");
                         this.kategori = new Kategori(kategoriId, kategoriNama);
                     } else {
                         this.kategori = null;
                     }
 
-                    loadFasilitasRelasi(conn); // Muat relasi fasilitas
+                    loadFasilitasRelasi(conn);
                 } else {
                     throw new SQLException("Wisata dengan ID " + id + " tidak ditemukan.");
                 }
@@ -207,45 +196,33 @@ public class Wisata implements Recordable {
         }
     }
 
-    /**
-     * Menyimpan relasi antara wisata ini dengan fasilitas-fasilitasnya ke tabel Wisata_Fasilitas.
-     */
     private void saveFasilitasRelasi(Connection conn) throws SQLException {
-        if (this.id == 0) { // Pastikan Wisata sudah memiliki ID (sudah tersimpan)
+        if (this.id == 0) {
             throw new IllegalStateException("Wisata harus disimpan terlebih dahulu sebelum menyimpan fasilitas relasi.");
         }
-        // Hapus relasi lama terlebih dahulu untuk memastikan kebersihan data
         String deleteSql = "DELETE FROM Wisata_Fasilitas WHERE wisata_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
             pstmt.setInt(1, this.id);
             pstmt.executeUpdate();
         }
 
-        // Masukkan relasi baru
         String insertSql = "INSERT INTO Wisata_Fasilitas (wisata_id, fasilitas_id) VALUES (?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
             for (Fasilitas fasilitas : daftarFasilitas) {
                 pstmt.setInt(1, this.id);
                 pstmt.setInt(2, fasilitas.getId());
-                pstmt.addBatch(); // Tambahkan ke batch untuk efisiensi
+                pstmt.addBatch();
             }
-            pstmt.executeBatch(); // Jalankan semua perintah batch
+            pstmt.executeBatch();
         }
     }
 
-    /**
-     * Memperbarui relasi antara wisata ini dengan fasilitas-fasilitasnya di tabel Wisata_Fasilitas.
-     * Ini dilakukan dengan menghapus semua relasi lama dan memasukkan yang baru.
-     */
     private void updateFasilitasRelasi(Connection conn) throws SQLException {
-        saveFasilitasRelasi(conn); // Logika save juga sudah mencakup update (hapus dulu baru insert)
+        saveFasilitasRelasi(conn);
     }
 
-    /**
-     * Memuat daftar fasilitas yang terkait dengan wisata ini dari database.
-     */
     private void loadFasilitasRelasi(Connection conn) throws SQLException {
-        this.daftarFasilitas.clear(); // Bersihkan daftar yang ada
+        this.daftarFasilitas.clear();
         String sql = "SELECT f.id, f.nama FROM Fasilitas f " +
                      "JOIN Wisata_Fasilitas wf ON f.id = wf.fasilitas_id " +
                      "WHERE wf.wisata_id = ?";
@@ -260,7 +237,6 @@ public class Wisata implements Recordable {
         }
     }
 
-    // Metode polimorfisme (contoh dari proposal) [cite: 44, 45]
     public void tampilkanInfo() {
         System.out.println("--- Detail Wisata ---");
         System.out.println("Nama: " + this.nama);

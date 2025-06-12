@@ -9,38 +9,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Panel ini bertanggung jawab untuk menampilkan detail lengkap dari satu objek Wisata,
- * termasuk menampilkan rating & komentar, serta form untuk menambahkan ulasan baru.
- */
 public class DetailWisataPanel extends JPanel {
 
-    // Data utama yang ditampilkan di panel ini
     private Wisata wisata;
     private User currentUser;
 
-    // Komponen untuk menampilkan detail wisata (Contoh)
     private JLabel lblNamaWisata;
     private JTextArea areaDeskripsi;
 
-    // Komponen untuk menampilkan rating
     private JLabel lblAverageRating;
-    private JPanel commentsPanel; // Panel untuk menampung semua komentar
+    private JPanel commentsPanel;
 
-    // Komponen untuk form input rating
     private JComboBox<Integer> ratingComboBox;
     private JTextArea commentTextArea;
     private JButton submitRatingButton;
-    private JPanel formPanel; // Panel yang menampung form input
+    private JPanel formPanel;
 
     private RatingDAO ratingDAO;
 
-    /**
-     * Constructor untuk DetailWisataPanel.
-     * @param wisata Objek Wisata yang akan ditampilkan detailnya.
-     * @param currentUser Objek User yang sedang login, untuk menentukan hak akses.
-     * @param mainFrame Referensi ke MainFrame untuk fungsionalitas kembali.
-     */
     public DetailWisataPanel(Wisata wisata, User currentUser, MainFrame mainFrame) {
         this.wisata = wisata;
         this.currentUser = currentUser;
@@ -49,10 +35,8 @@ public class DetailWisataPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // --- PANEL UTAMA UNTUK DETAIL & RATING ---
         JPanel mainContentPanel = new JPanel(new BorderLayout(10, 10));
 
-        // 1. Panel Detail Wisata (Bagian Atas)
         JPanel detailPanel = new JPanel(new BorderLayout());
         lblNamaWisata = new JLabel(wisata.getNama());
         lblNamaWisata.setFont(new Font("Segoe UI", Font.BOLD, 24));
@@ -63,7 +47,6 @@ public class DetailWisataPanel extends JPanel {
         detailPanel.add(lblNamaWisata, BorderLayout.NORTH);
         detailPanel.add(new JScrollPane(areaDeskripsi), BorderLayout.CENTER);
 
-        // 2. Panel Rating (Bagian Bawah pada mainContentPanel)
         JPanel ratingDisplayPanel = new JPanel(new BorderLayout(5, 5));
         lblAverageRating = new JLabel("Rating: - / 5");
         lblAverageRating.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -76,32 +59,24 @@ public class DetailWisataPanel extends JPanel {
         mainContentPanel.add(detailPanel, BorderLayout.NORTH);
         mainContentPanel.add(ratingDisplayPanel, BorderLayout.CENTER);
 
-        // 3. Panel Form Input Rating (akan ditempatkan di kanan atau bawah)
         formPanel = createFormPanel();
         
-        // Hanya tampilkan form jika yang login adalah 'user'
         if (currentUser != null && "user".equals(currentUser.getRole())) {
             formPanel.setVisible(true);
         } else {
             formPanel.setVisible(false);
         }
 
-        // 4. Tombol Kembali
         JButton backButton = new JButton("Kembali ke Daftar Wisata");
         backButton.addActionListener(e -> mainFrame.showWisataPanel());
 
-        // Menambahkan semua panel ke layout utama
         add(mainContentPanel, BorderLayout.CENTER);
         add(formPanel, BorderLayout.EAST);
         add(backButton, BorderLayout.SOUTH);
 
-        // Muat data rating dari database
         loadRatings();
     }
 
-    /**
-     * Membuat panel untuk form input rating dan komentar.
-     */
     private JPanel createFormPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createTitledBorder("Beri Ulasan Anda"));
@@ -122,16 +97,11 @@ public class DetailWisataPanel extends JPanel {
         return panel;
     }
 
-    /**
-     * Mengambil data dari DAO dan memperbarui komponen UI.
-     */
     private void loadRatings() {
-        // Muat dan tampilkan rata-rata rating
         double avgRating = ratingDAO.getAverageRating(wisata.getId());
         String formattedRating = String.format("%.1f", avgRating);
         lblAverageRating.setText("⭐ Rating Rata-rata: " + formattedRating + " / 5.0 (" + ratingDAO.getRatingsByWisataId(wisata.getId()).size() + " ulasan)");
 
-        // Muat dan tampilkan semua komentar
         commentsPanel.removeAll();
         List<Rating> ratings = ratingDAO.getRatingsByWisataId(wisata.getId());
 
@@ -165,9 +135,6 @@ public class DetailWisataPanel extends JPanel {
         commentsPanel.repaint();
     }
 
-    /**
-     * Menambahkan listener untuk tombol submit.
-     */
     private void addSubmitButtonListener() {
         submitRatingButton.addActionListener(e -> {
             Integer selectedRating = (Integer) ratingComboBox.getSelectedItem();

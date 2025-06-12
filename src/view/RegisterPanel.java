@@ -15,7 +15,7 @@ public class RegisterPanel extends JFrame {
         setTitle("Registrasi Pengguna Baru");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 350);
-        setLocationRelativeTo(null); // Pusat layar
+        setLocationRelativeTo(null);
         setResizable(false);
 
         JPanel panel = new JPanel(new GridBagLayout());
@@ -34,7 +34,6 @@ public class RegisterPanel extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(titleLabel, gbc);
 
-        // Username
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
@@ -45,7 +44,6 @@ public class RegisterPanel extends JFrame {
         gbc.gridx = 1;
         panel.add(usernameField, gbc);
 
-        // Password
         gbc.gridx = 0;
         gbc.gridy = 2;
         panel.add(new JLabel("Password:"), gbc);
@@ -54,7 +52,6 @@ public class RegisterPanel extends JFrame {
         gbc.gridx = 1;
         panel.add(passwordField, gbc);
 
-        // Email
         gbc.gridx = 0;
         gbc.gridy = 3;
         panel.add(new JLabel("Email:"), gbc);
@@ -63,7 +60,6 @@ public class RegisterPanel extends JFrame {
         gbc.gridx = 1;
         panel.add(emailField, gbc);
 
-        // Register button
         registerButton = new JButton("Daftar");
         registerButton.setBackground(new Color(0, 153, 76));
         registerButton.setForeground(Color.WHITE);
@@ -76,11 +72,10 @@ public class RegisterPanel extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(registerButton, gbc);
 
-        // Action
         registerButton.addActionListener(e -> handleRegister());
 
         add(panel);
-        setVisible(true); // Tetap ada sesuai permintaan
+        setVisible(true);
     }
 
     private void handleRegister() {
@@ -97,12 +92,12 @@ public class RegisterPanel extends JFrame {
         user.setNama(username);
         user.setPassword(password);
         user.setEmail(email);
-        user.setRole("user"); // Default role adalah user biasa
+        user.setRole("user");
 
         UserDAO dao = new UserDAO();
         if (dao.registerUser(user)) {
             JOptionPane.showMessageDialog(this, "Registrasi berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-            dispose(); // Tutup jendela setelah berhasil
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Registrasi gagal. Coba username atau email lain.", "Gagal", JOptionPane.ERROR_MESSAGE);
         }
