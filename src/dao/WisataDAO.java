@@ -103,5 +103,35 @@ public class WisataDAO {
             e.printStackTrace();
         }
         return wisataList;
+
+
+
+    
     }
-}
+
+    // ...existing code...
+    
+        public void deleteWisata(Wisata selectedWisata) throws SQLException {
+            try (Connection conn = database.DatabaseManager.getConnection()) {
+                selectedWisata.delete(conn);
+            }
+        }
+    
+    // ...existing code...
+
+    // ...existing code...}
+        public void addWisata(Wisata wisata) throws SQLException {
+            try (Connection conn = database.DatabaseManager.getConnection()) {
+                wisata.save(conn); // Pastikan Wisata punya method save(Connection)
+            }
+        }
+    
+        public void updateWisata(Wisata wisata) throws SQLException {
+            try (Connection conn = database.DatabaseManager.getConnection()) {
+                wisata.update(conn); // Pastikan Wisata punya method update(Connection)
+            }
+        }
+        
+    }
+    
+    // ...existing code...

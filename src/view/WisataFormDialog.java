@@ -37,8 +37,8 @@ public class WisataFormDialog extends JDialog {
     private FasilitasDAO fasilitasDAO;
     private WisataDAO wisataDAO;
 
-    public WisataFormDialog(Frame owner, boolean modal, Wisata wisataToEdit) {
-        super(owner, modal);
+    public WisataFormDialog(Window owner, boolean modal, Wisata wisataToEdit) {
+        super(owner instanceof Frame ? (Frame) owner : null, modal);
         this.wisata = wisataToEdit; // Jika null, ini adalah operasi tambah
         kategoriDAO = new KategoriDAO();
         fasilitasDAO = new FasilitasDAO();
@@ -264,8 +264,8 @@ public class WisataFormDialog extends JDialog {
             }
             dataSaved = true;
             dispose(); // Tutup dialog setelah berhasil
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Terjadi kesalahan database saat menyimpan: " + ex.getMessage(), "Error Database", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menyimpan: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace(); // Log error untuk debugging
             // Skenario Error Operasi Basis Data
         }
