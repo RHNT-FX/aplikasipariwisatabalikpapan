@@ -101,7 +101,7 @@ public class MainFrame extends JFrame {
     public void showWisataPanel() {
         // Kita teruskan 'this' (instance MainFrame) ke WisataPanel
         // agar WisataPanel bisa memanggil kembali MainFrame untuk navigasi.
-        showPanel(new WisataPanel(this, currentUser));
+        showPanel(new WisataPanel(this,currentUser));
     }
 
     /**

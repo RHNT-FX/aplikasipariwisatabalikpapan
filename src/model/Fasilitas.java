@@ -1,4 +1,3 @@
-// src/model/Fasilitas.java
 package model;
 
 import java.sql.Connection;
@@ -8,10 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
-/**
- * Merepresentasikan fasilitas yang tersedia di destinasi wisata.
- * Menerapkan enkapsulasi dan mengimplementasikan Recordable.
- */
 public class Fasilitas implements Recordable {
     private int id;
     private String nama;
@@ -45,7 +40,6 @@ public class Fasilitas implements Recordable {
         this.nama = nama;
     }
 
-    // --- Implementasi Recordable ---
     @Override
     public void save(Connection conn) throws SQLException {
         String sql = "INSERT INTO Fasilitas (nama) VALUES (?)";

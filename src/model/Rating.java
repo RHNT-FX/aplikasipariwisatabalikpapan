@@ -2,10 +2,6 @@ package model;
 
 import java.sql.Timestamp;
 
-/**
- * Kelas Model (POJO - Plain Old Java Object) yang merepresentasikan
- * satu entitas rating dan komentar dalam database.
- */
 public class Rating {
 
     private int id;
@@ -14,9 +10,8 @@ public class Rating {
     private int rating;
     private String komentar;
     private Timestamp createdAt;
-    private String namaUser; // Digunakan untuk menampilkan nama pemberi komentar
+    private String namaUser;
 
-    // Constructor untuk membuat objek Rating baru sebelum disimpan ke DB
     public Rating(int wisataId, int userId, int rating, String komentar) {
         this.wisataId = wisataId;
         this.userId = userId;
@@ -24,7 +19,6 @@ public class Rating {
         this.komentar = komentar;
     }
 
-    // Constructor untuk membuat objek Rating saat data diambil dari DB
     public Rating(int id, int wisataId, int userId, int rating, String komentar, Timestamp createdAt) {
         this.id = id;
         this.wisataId = wisataId;
@@ -34,8 +28,6 @@ public class Rating {
         this.createdAt = createdAt;
     }
     
-    // --- Getters and Setters ---
-
     public int getId() {
         return id;
     }

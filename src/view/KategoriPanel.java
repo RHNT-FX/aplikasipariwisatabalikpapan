@@ -1,4 +1,3 @@
-// src/view/KategoriPanel.java
 package view;
 
 import dao.KategoriDAO;
@@ -30,7 +29,6 @@ public class KategoriPanel extends JPanel {
     }
 
     private void initComponents() {
-        // Input form untuk tambah/edit
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         inputPanel.add(new JLabel("Nama Kategori:"));
         namaKategoriField = new JTextField(20);
@@ -46,7 +44,6 @@ public class KategoriPanel extends JPanel {
 
         add(inputPanel, BorderLayout.NORTH);
 
-        // Tabel untuk menampilkan kategori
         tableModel = new DefaultTableModel(new Object[]{"ID", "Nama Kategori"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -126,7 +123,6 @@ public class KategoriPanel extends JPanel {
         try {
             Kategori kategoriToUpdate = kategoriDAO.getKategoriById(id);
             if (kategoriToUpdate != null) {
-                // Cek duplikasi nama jika nama berubah dan nama baru sudah ada untuk kategori lain
                 Kategori existingKategori = kategoriDAO.getKategoriByNama(namaBaru);
                 if (existingKategori != null && existingKategori.getId() != id) {
                     JOptionPane.showMessageDialog(this, "Kategori dengan nama tersebut sudah ada.", "Duplikasi Data", JOptionPane.WARNING_MESSAGE);

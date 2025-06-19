@@ -1,4 +1,3 @@
-// src/model/Kategori.java
 package model;
 
 import java.sql.Connection;
@@ -8,10 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
-/**
- * Merepresentasikan kategori destinasi wisata.
- * Menerapkan enkapsulasi dan mengimplementasikan Recordable.
- */
 public class Kategori implements Recordable {
     private int id;
     private String nama;
@@ -45,7 +40,6 @@ public class Kategori implements Recordable {
         this.nama = nama;
     }
 
-    // --- Implementasi Recordable ---
     @Override
     public void save(Connection conn) throws SQLException {
         String sql = "INSERT INTO Kategori (nama) VALUES (?)";
@@ -97,7 +91,7 @@ public class Kategori implements Recordable {
 
     @Override
     public String toString() {
-        return nama; // Lebih user-friendly untuk ditampilkan di UI seperti ComboBox
+        return nama;
     }
 
     @Override

@@ -1,4 +1,3 @@
-// src/model/User.java
 package model;
 
 import java.sql.Connection;
@@ -8,24 +7,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
-/**
- * Kelas dasar untuk merepresentasikan pengguna aplikasi.
- * Menerapkan prinsip enkapsulasi dengan atribut private dan public getter/setter[cite: 40, 41].
- * Mengimplementasikan interface Recordable untuk operasi database.
- */
 public class User implements Recordable {
-    protected int id; // Menggunakan protected agar bisa diakses oleh subclass Admin
+    protected int id;
     protected String nama;
     protected String email;
     protected String password;
-    protected String role; // 'user' atau 'admin'
+    protected String role;
 
-    // Konstruktor kosong
     public User() {
-        this.role = "user"; // Default role
+        this.role = "user";
     }
 
-    // Konstruktor dengan parameter
     public User(int id, String nama, String email, String password, String role) {
         this.id = id;
         this.nama = nama;
@@ -34,7 +26,6 @@ public class User implements Recordable {
         this.role = role;
     }
 
-    // --- Getter dan Setter (Enkapsulasi) ---
     @Override
     public int getId() {
         return id;
@@ -80,8 +71,6 @@ public class User implements Recordable {
     public boolean isAdmin() {
         return "admin".equalsIgnoreCase(this.role);
     }
-
-    // --- Implementasi Recordable ---
 
     @Override
     public void save(Connection conn) throws SQLException {
@@ -142,7 +131,6 @@ public class User implements Recordable {
         }
     }
 
-    // Metode tambahan untuk login
     public static User authenticate(Connection conn, String email, String password) throws SQLException {
         String sql = "SELECT id, nama, email, password, role FROM Users WHERE email = ? AND password = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -158,16 +146,14 @@ public class User implements Recordable {
                         rs.getString("role")
                     );
                 }
-                return null; // Pengguna tidak ditemukan atau kredensial salah
+                return null;
             }
         }
     }
 
-    // Metode untuk melihat detail (Polimorfisme) - contoh dari proposal [cite: 45]
     public void lihatDetail(Wisata wisata) {
-        // Ini adalah contoh sederhana. Nanti akan ditampilkan di GUI.
         System.out.println("Pengguna " + this.nama + " melihat detail wisata:");
-        wisata.tampilkanInfo(); // Contoh polimorfisme, memanggil method tampilkanInfo pada objek Wisata
+        wisata.tampilkanInfo();
     }
 
     @Override
