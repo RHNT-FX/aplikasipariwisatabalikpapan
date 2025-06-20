@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * Kelas ini bertanggung jawab untuk mengelola otentikasi pengguna.
  */
 public class AuthManager {
-    private static User currentUser; // Menyimpan user yang sedang login
+    private static User currentUser; // user yang lagi login
 
     /**
      * Mencoba melakukan login pengguna.

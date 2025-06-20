@@ -97,11 +97,18 @@ public class Wisata implements Recordable {
     }
 
     public List<Fasilitas> getDaftarFasilitas() {
+        if (daftarFasilitas == null) {
+            daftarFasilitas = new ArrayList<>();
+        }
         return daftarFasilitas;
     }
 
     public void setDaftarFasilitas(List<Fasilitas> daftarFasilitas) {
-        this.daftarFasilitas = daftarFasilitas;
+        if (daftarFasilitas == null) {
+            this.daftarFasilitas = new ArrayList<>();
+        } else {
+            this.daftarFasilitas = new ArrayList<>(daftarFasilitas);
+        }
     }
 
     public void addFasilitas(Fasilitas fasilitas) {
@@ -190,7 +197,7 @@ public class Wisata implements Recordable {
     @Override
     public void load(Connection conn, int id) throws SQLException {
         String sql = "SELECT w.id, w.nama, w.deskripsi, w.lokasi, w.harga_tiket, w.jam_operasional, " +
-                     "k.id AS kategori_id, k.nama AS kategori_nama " +
+                     "k.id AS kategori_id, k.nama AS kategori_nama, w.foto_path " + // tambahkan w.foto_path
                      "FROM Wisata w LEFT JOIN Kategori k ON w.kategori_id = k.id " +
                      "WHERE w.id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -212,7 +219,9 @@ public class Wisata implements Recordable {
                         this.kategori = null;
                     }
 
-                    loadFasilitasRelasi(conn);
+                    this.fotoPath = rs.getString("foto_path"); // tambahkan pengambilan foto_path
+
+                    loadFasilitasRelasi(conn); // pastikan relasi fasilitas di-load
                 } else {
                     throw new SQLException("Wisata dengan ID " + id + " tidak ditemukan.");
                 }

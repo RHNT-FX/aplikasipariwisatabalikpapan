@@ -12,6 +12,7 @@ import java.util.List;
 
 public class WisataDAO {
 
+    // DAO buat wisata, biar gampang ngambil data dari db
     public List<Wisata> getAllWisata() {
         List<Wisata> wisataList = new ArrayList<>();
         String sql = "SELECT w.*, k.id AS kategori_id, k.nama AS kategori_nama " +
@@ -22,12 +23,14 @@ public class WisataDAO {
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
+                // ambil kategori, kalo ada
                 Kategori kategori = null;
                 int kategoriId = rs.getInt("kategori_id");
                 if (!rs.wasNull()) {
                     kategori = new Kategori(kategoriId, rs.getString("kategori_nama"));
                 }
 
+                // bikin objek wisata, masukin ke list
                 Wisata wisata = new Wisata(
                     rs.getInt("id"),
                     rs.getString("nama"),
@@ -41,6 +44,7 @@ public class WisataDAO {
                 wisataList.add(wisata);
             }
         } catch (SQLException e) {
+            // kalo error ya print aja
             System.err.println("Error saat mengambil semua data wisata: " + e.getMessage());
             e.printStackTrace();
         }
@@ -107,4 +111,3 @@ public class WisataDAO {
         }
         
     }
-    

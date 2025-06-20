@@ -65,8 +65,14 @@ public class DetailWisataPanel extends JPanel {
         // Fasilitas
         String fasilitasStr = "-";
         List<Fasilitas> fasilitasList = wisata.getDaftarFasilitas();
+        // Debug print
+        System.out.println("DEBUG fasilitasList size: " + (fasilitasList == null ? "null" : fasilitasList.size()));
         if (fasilitasList != null && !fasilitasList.isEmpty()) {
-            fasilitasStr = fasilitasList.stream().map(Fasilitas::getNama).collect(Collectors.joining(", "));
+            fasilitasStr = fasilitasList.stream()
+                .filter(f -> f != null && f.getNama() != null)
+                .map(Fasilitas::getNama)
+                .distinct()
+                .collect(Collectors.joining(", "));
         }
         JLabel lblFasilitas = new JLabel("Fasilitas: " + fasilitasStr);
         infoPanel.add(lblFasilitas);

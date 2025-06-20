@@ -6,15 +6,18 @@ import java.util.List;
 
 public class Admin extends User {
 
+    // default admin, role-nya admin
     public Admin() {
         super();
         this.setRole("admin");
     }
 
+    // kalo mau langsung isi semua
     public Admin(int id, String nama, String email, String password) {
         super(id, nama, email, password, "admin");
     }
 
+    // method2 buat ngatur wisata, kategori, fasilitas, dll
     public void tambahWisata(Wisata wisata, Connection conn) throws SQLException {
         wisata.save(conn);
         System.out.println("Admin " + this.getNama() + " berhasil menambah wisata: " + wisata.getNama());
@@ -47,6 +50,7 @@ public class Admin extends User {
         }
     }
 
+    // biar kalo di-print ga aneh
     @Override
     public String toString() {
         return "Admin{" +

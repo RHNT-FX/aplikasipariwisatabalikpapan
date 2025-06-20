@@ -122,10 +122,13 @@ public class WisataFormDialog extends JDialog {
         gbc.weighty = 1.0;
         fasilitasListModel = new DefaultListModel<>();
         fasilitasList = new JList<>(fasilitasListModel);
-        fasilitasList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        fasilitasList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION); // multiple selection
         loadFasilitasIntoList(); // Muat fasilitas dari DB
         JScrollPane fasilitasScrollPane = new JScrollPane(fasilitasList);
         formPanel.add(fasilitasScrollPane, gbc);
+        // Tambahkan instruksi
+        gbc.gridy++;
+        formPanel.add(new JLabel("<html><i>Tahan Ctrl/Shift untuk memilih lebih dari satu fasilitas</i></html>"), gbc);
         gbc.weighty = 0; // Reset weighty
 
         // Baris 7: Nama File Foto

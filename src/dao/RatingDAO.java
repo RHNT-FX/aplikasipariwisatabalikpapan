@@ -77,6 +77,7 @@ public class RatingDAO {
                 }
             }
         } catch (SQLException e) {
+            // kalo error ya print aja
             System.err.println("Error saat mengambil ratings: " + e.getMessage());
             e.printStackTrace();
         }
