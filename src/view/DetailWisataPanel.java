@@ -139,15 +139,21 @@ public class DetailWisataPanel extends JPanel {
         submitRatingButton.addActionListener(e -> {
             Integer selectedRating = (Integer) ratingComboBox.getSelectedItem();
             String comment = commentTextArea.getText().trim();
-
+    
             if (comment.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Komentar tidak boleh kosong.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
+    
+            // Cek apakah user sudah pernah memberi rating untuk wisata ini
+            if (ratingDAO.hasUserRated(wisata.getId(), currentUser.getId())) {
+                JOptionPane.showMessageDialog(this, "Anda sudah pernah memberi ulasan untuk destinasi ini.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+    
             Rating newRating = new Rating(wisata.getId(), currentUser.getId(), selectedRating, comment);
             ratingDAO.addRating(newRating);
-
+    
             JOptionPane.showMessageDialog(this, "Terima kasih atas ulasan Anda!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             commentTextArea.setText("");
             ratingComboBox.setSelectedIndex(0);

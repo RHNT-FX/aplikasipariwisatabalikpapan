@@ -12,6 +12,24 @@ import java.util.List;
 
 public class RatingDAO {
 
+        public boolean hasUserRated(int wisataId, int userId) {
+        String sql = "SELECT COUNT(*) FROM Ratings WHERE wisata_id = ? AND user_id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, wisataId);
+            pstmt.setInt(2, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error saat cek rating user: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void addRating(Rating rating) {
         String sql = "INSERT INTO Ratings (wisata_id, user_id, rating, komentar) VALUES (?, ?, ?, ?)";
 

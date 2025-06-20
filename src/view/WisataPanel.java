@@ -16,17 +16,12 @@ public class WisataPanel extends JPanel {
     private MainFrame mainFrame;
     private User user;
 
-    // Komponen untuk pencarian
     private JTextField searchField;
     private JButton searchButton;
 
-    // Tombol aksi
     private JButton addButton, editButton, deleteButton, detailButton;
 
-    // Untuk menyimpan wisata yang dipilih
     private Wisata selectedWisata;
-
-    
 
     public WisataPanel(MainFrame mainFrame, User user) {
         this.mainFrame = mainFrame;
@@ -36,7 +31,6 @@ public class WisataPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Panel pencarian
         JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
         searchField = new JTextField();
         searchButton = new JButton("Cari");
@@ -52,24 +46,26 @@ public class WisataPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(wisataListPanel);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Panel tombol bawah
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        detailButton = new JButton("Lihat Detail");
+        buttonPanel.add(detailButton);
+
         if (user != null && "admin".equalsIgnoreCase(user.getRole())) {
             addButton = new JButton("Tambah Destinasi");
             editButton = new JButton("Ubah Destinasi");
             deleteButton = new JButton("Hapus Destinasi");
-            detailButton = new JButton("Lihat Detail");
 
             buttonPanel.add(addButton);
             buttonPanel.add(editButton);
             buttonPanel.add(deleteButton);
-            buttonPanel.add(detailButton);
 
             addButton.addActionListener(e -> showAddWisataDialog());
             editButton.addActionListener(e -> showEditWisataDialog());
             deleteButton.addActionListener(e -> showDeleteWisataDialog());
-            detailButton.addActionListener(e -> showDetailWisataDialog());
         }
+
+        detailButton.addActionListener(e -> showDetailWisataDialog());
+
         add(buttonPanel, BorderLayout.SOUTH);
 
         searchButton.addActionListener(e -> performSearch());
@@ -97,7 +93,6 @@ public class WisataPanel extends JPanel {
         }
     }
 
-    // Menampilkan daftar wisata
     private void updateWisataDisplay(List<Wisata> wisataList) {
         wisataListPanel.removeAll();
         selectedWisata = null;
@@ -109,11 +104,11 @@ public class WisataPanel extends JPanel {
             wisataListPanel.setLayout(new GridLayout(0, 3, 10, 10));
             for (Wisata wisata : wisataList) {
                 WisataCardPanel cardPanel = new WisataCardPanel(wisata);
+                cardPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 cardPanel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         selectedWisata = wisata;
-                        // Optional: highlight card
                     }
                 });
                 wisataListPanel.add(cardPanel);
@@ -123,7 +118,6 @@ public class WisataPanel extends JPanel {
         wisataListPanel.repaint();
     }
 
-    // Tambah destinasi
     private void showAddWisataDialog() {
         WisataFormDialog dialog = new WisataFormDialog(SwingUtilities.getWindowAncestor(this), true, null);
         dialog.setVisible(true);
@@ -132,7 +126,6 @@ public class WisataPanel extends JPanel {
         }
     }
 
-    // Edit destinasi
     private void showEditWisataDialog() {
         if (selectedWisata == null) {
             JOptionPane.showMessageDialog(this, "Pilih destinasi yang ingin diubah.", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -145,12 +138,6 @@ public class WisataPanel extends JPanel {
         }
     }
 
-
-        // ...existing code...
-    // Removed invalid showWisataPanel method.
-    // ...existing code...
-
-    // Hapus destinasi
     private void showDeleteWisataDialog() {
         if (selectedWisata == null) {
             JOptionPane.showMessageDialog(this, "Pilih destinasi yang ingin dihapus.", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -168,7 +155,6 @@ public class WisataPanel extends JPanel {
         }
     }
 
-    // Lihat detail destinasi
     private void showDetailWisataDialog() {
         if (selectedWisata == null) {
             JOptionPane.showMessageDialog(this, "Pilih destinasi yang ingin dilihat detailnya.", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -177,7 +163,6 @@ public class WisataPanel extends JPanel {
         mainFrame.showDetailWisata(selectedWisata);
     }
 
-    // Menangani error database
     private void handleDatabaseError(Exception e) {
         wisataListPanel.removeAll();
         wisataListPanel.setLayout(new BorderLayout());
