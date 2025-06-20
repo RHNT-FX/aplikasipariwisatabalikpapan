@@ -1,3 +1,5 @@
+// ===============================
+// Interface Recordable, biar semua class bisa save, update, delete, load
 package model;
 
 import java.sql.Connection;

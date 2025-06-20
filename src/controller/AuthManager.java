@@ -1,48 +1,31 @@
-// src/controller/AuthManager.java
 package controller;
 
 import dao.UserDAO;
 import model.User;
 import java.sql.SQLException;
 
-/**
- * Kelas ini bertanggung jawab untuk mengelola otentikasi pengguna.
- */
+//kelas buat ngelola autentikasi user//
 public class AuthManager {
     private static User currentUser; // user yang lagi login
 
-    /**
-     * Mencoba melakukan login pengguna.
-     * @param email Email pengguna.
-     * @param password Password pengguna.
-     * @return User yang berhasil login (bisa User atau Admin), null jika gagal.
-     * @throws SQLException Jika terjadi masalah koneksi atau query database.
-     */
+    //login user dengan email dan password//
     public static User login(String email, String password) throws SQLException {
         UserDAO userDAO = new UserDAO();
         currentUser = userDAO.authenticateUser(email, password);
         return currentUser;
     }
 
-    /**
-     * Mendapatkan user yang sedang login saat ini.
-     * @return Objek User yang sedang login, null jika belum ada yang login.
-     */
+    //tanda user lagi login//
     public static User getCurrentUser() {
         return currentUser;
     }
 
-    /**
-     * Memeriksa apakah user yang sedang login adalah Admin.
-     * @return true jika user adalah Admin, false jika bukan atau belum login.
-     */
+     //Meriksa user yang lagi login adalah Admin//
     public static boolean isAdminLoggedIn() {
         return currentUser != null && currentUser.isAdmin();
     }
 
-    /**
-     * Melakukan logout user saat ini.
-     */
+    //ngelakuin logout user sekarang//
     public static void logout() {
         currentUser = null;
     }

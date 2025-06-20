@@ -1,17 +1,15 @@
-// src/app/Main.java
 package app;
 
 import database.DatabaseManager;
-import view.LoginFrame; // Sekarang ini sudah ada
+import view.LoginFrame;
 import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
-        // Inisialisasi database dan buat tabel jika belum ada
+        // Inisialisasi database dan buat tabel kalo belum ada
         DatabaseManager.createTables();
 
-        // Menjalankan aplikasi GUI di Event Dispatch Thread (EDT)
-        // Ini adalah praktik terbaik untuk aplikasi Swing
+    // ngejalanin GUI LoginFrame di thread Swing//
         SwingUtilities.invokeLater(() -> {
             LoginFrame loginFrame = new LoginFrame();
             loginFrame.setVisible(true);
