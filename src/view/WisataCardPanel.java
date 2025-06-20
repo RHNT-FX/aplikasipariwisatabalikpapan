@@ -54,11 +54,41 @@ public class WisataCardPanel extends JPanel {
         add(titleLocationLabel, BorderLayout.SOUTH);
     }
 
-    private void populateCard() {
-        if (wisata != null) {
-            titleLocationLabel.setText("<html><center><b>" + wisata.getNama() + "</b><br>" + wisata.getLokasi() + "</center></html>");
+private void populateCard() {
+    if (wisata != null) {
+        String fotoFileName = wisata.getFotoPath();
+        if (fotoFileName != null && !fotoFileName.isEmpty()) {
+            String fotoPath = "src/resources/foto_wisata/" + fotoFileName;
+            java.io.File file = new java.io.File(fotoPath);
+            System.out.println("Cek foto: " + file.getAbsolutePath() + " exists? " + file.exists());
+            if (file.exists()) {
+                ImageIcon icon = new ImageIcon(fotoPath);
+                Image img = icon.getImage().getScaledInstance(imageLabel.getPreferredSize().width, imageLabel.getPreferredSize().height, Image.SCALE_SMOOTH);
+                imageLabel.setIcon(new ImageIcon(img));
+                imageLabel.setText("");
+            } else {
+                setPlaceholderImage();
+            }
+        } else {
+            setPlaceholderImage();
         }
+        titleLocationLabel.setText("<html><center><b>" + wisata.getNama() + "</b><br>" + wisata.getLokasi() + "</center></html>");
     }
+}
+
+
+private void setPlaceholderImage() {
+    try {
+        ImageIcon defaultImage = new ImageIcon(getClass().getResource("/resources/placeholder_wisata.png"));
+        if (defaultImage.getImage() != null) {
+            Image scaledImage = defaultImage.getImage().getScaledInstance(imageLabel.getPreferredSize().width, imageLabel.getPreferredSize().height, Image.SCALE_SMOOTH);
+            imageLabel.setIcon(new ImageIcon(scaledImage));
+        }
+    } catch (Exception e) {
+        imageLabel.setText("Gambar Wisata");
+        imageLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+    }
+}
 
     public Wisata getWisata() {
         return wisata;

@@ -18,13 +18,15 @@ public class Wisata implements Recordable {
     private String jamOperasional;
     private Kategori kategori;
     private List<Fasilitas> daftarFasilitas;
+    private String fotoPath;
+    
 
     public Wisata() {
         this.daftarFasilitas = new ArrayList<>();
     }
 
     public Wisata(int id, String nama, String deskripsi, String lokasi,
-                  double hargaTiket, String jamOperasional, Kategori kategori) {
+                  double hargaTiket, String jamOperasional, Kategori kategori, String fotoPath) {
         this.id = id;
         this.nama = nama;
         this.deskripsi = deskripsi;
@@ -33,6 +35,7 @@ public class Wisata implements Recordable {
         this.jamOperasional = jamOperasional;
         this.kategori = kategori;
         this.daftarFasilitas = new ArrayList<>();
+        this.fotoPath = fotoPath;
     }
 
     @Override
@@ -111,17 +114,33 @@ public class Wisata implements Recordable {
         this.daftarFasilitas.remove(fasilitas);
     }
 
+    public String getFotoPath() {
+    return fotoPath;
+    }
+
+    public void setFotoPath(String fotoPath) {
+    this.fotoPath = fotoPath;
+    }
+
+
     @Override
     public void save(Connection conn) throws SQLException {
-        String sql = "INSERT INTO Wisata (nama, deskripsi, lokasi, harga_tiket, jam_operasional, kategori_id) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setString(1, this.nama);
-            pstmt.setString(2, this.deskripsi);
-            pstmt.setString(3, this.lokasi);
-            pstmt.setDouble(4, this.hargaTiket);
-            pstmt.setString(5, this.jamOperasional);
-            pstmt.setInt(6, (this.kategori != null) ? this.kategori.getId() : null);
-            pstmt.executeUpdate();
+    String sql = "INSERT INTO Wisata (nama, deskripsi, lokasi, harga_tiket, jam_operasional, kategori_id, foto_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        pstmt.setString(1, this.nama);
+        pstmt.setString(2, this.deskripsi);
+        pstmt.setString(3, this.lokasi);
+        pstmt.setDouble(4, this.hargaTiket);
+        pstmt.setString(5, this.jamOperasional);
+        if (this.kategori != null) {
+            pstmt.setInt(6, this.kategori.getId());
+        } else {
+            pstmt.setNull(6, java.sql.Types.INTEGER);
+        }
+        pstmt.setString(7, this.fotoPath); // <-- parameter ke-7
+        pstmt.executeUpdate();
+        // ...existing code...
+    
 
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -134,19 +153,24 @@ public class Wisata implements Recordable {
 
     @Override
     public void update(Connection conn) throws SQLException {
-        String sql = "UPDATE Wisata SET nama = ?, deskripsi = ?, lokasi = ?, harga_tiket = ?, jam_operasional = ?, kategori_id = ? WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, this.nama);
-            pstmt.setString(2, this.deskripsi);
-            pstmt.setString(3, this.lokasi);
-            pstmt.setDouble(4, this.hargaTiket);
-            pstmt.setString(5, this.jamOperasional);
-            pstmt.setInt(6, (this.kategori != null) ? this.kategori.getId() : null);
-            pstmt.setInt(7, this.id);
-            pstmt.executeUpdate();
-            updateFasilitasRelasi(conn);
+    String sql = "UPDATE Wisata SET nama = ?, deskripsi = ?, lokasi = ?, harga_tiket = ?, jam_operasional = ?, kategori_id = ?, foto_path = ? WHERE id = ?";
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setString(1, this.nama);
+        pstmt.setString(2, this.deskripsi);
+        pstmt.setString(3, this.lokasi);
+        pstmt.setDouble(4, this.hargaTiket);
+        pstmt.setString(5, this.jamOperasional);
+        if (this.kategori != null) {
+            pstmt.setInt(6, this.kategori.getId());
+        } else {
+            pstmt.setNull(6, java.sql.Types.INTEGER);
         }
+        pstmt.setString(7, this.fotoPath);
+        pstmt.setInt(8, this.id);
+        pstmt.executeUpdate();
+        updateFasilitasRelasi(conn);
     }
+}
 
     @Override
     public void delete(Connection conn) throws SQLException {

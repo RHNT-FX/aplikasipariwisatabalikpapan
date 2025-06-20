@@ -1,4 +1,3 @@
-// src/view/WisataFormDialog.java
 package view;
 
 import dao.FasilitasDAO;
@@ -16,16 +15,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Dialog untuk menambah atau mengedit data destinasi wisata.
- * Ini adalah contoh "Form Input" dari proposal.
- */
 public class WisataFormDialog extends JDialog {
 
     private Wisata wisata; // Objek wisata yang sedang diedit (null jika baru)
     private boolean dataSaved = false;
 
-    private JTextField namaField, lokasiField, jamOperasionalField;
+    private JTextField namaField, lokasiField, jamOperasionalField, fotoFileNameField;
     private JTextArea deskripsiArea;
     private JTextField hargaTiketField;
     private JComboBox<Kategori> kategoriComboBox;
@@ -133,6 +128,14 @@ public class WisataFormDialog extends JDialog {
         formPanel.add(fasilitasScrollPane, gbc);
         gbc.weighty = 0; // Reset weighty
 
+        // Baris 7: Nama File Foto
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        formPanel.add(new JLabel("Nama File Foto:"), gbc);
+        gbc.gridx = 1;
+        fotoFileNameField = new JTextField(30);
+        formPanel.add(fotoFileNameField, gbc);
+
         add(formPanel, BorderLayout.CENTER);
 
         // --- Tombol Aksi ---
@@ -201,22 +204,25 @@ public class WisataFormDialog extends JDialog {
             }
             int[] indices = selectedFasilitasIndices.stream().mapToInt(Integer::intValue).toArray();
             fasilitasList.setSelectedIndices(indices);
+
+            // Nama file foto
+            if (wisata.getFotoPath() != null && !wisata.getFotoPath().isEmpty()) {
+                fotoFileNameField.setText(wisata.getFotoPath());
+            } else {
+                fotoFileNameField.setText("");
+            }
+        } else {
+            fotoFileNameField.setText("");
         }
     }
 
     private void addListeners() {
         saveButton.addActionListener(e -> saveWisata());
         cancelButton.addActionListener(e -> dispose());
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Tombol Simpan ditekan. Event source: " + e.getSource());
-            }
-        });
     }
 
     private void saveWisata() {
-        // --- Validasi Input (Skenario Error Input Validasi) ---
+        // --- Validasi Input ---
         String nama = namaField.getText().trim();
         String lokasi = lokasiField.getText().trim();
         String jamOperasional = jamOperasionalField.getText().trim();
@@ -241,6 +247,7 @@ public class WisataFormDialog extends JDialog {
 
         Kategori selectedKategori = (Kategori) kategoriComboBox.getSelectedItem();
         List<Fasilitas> selectedFasilitas = fasilitasList.getSelectedValuesList();
+        String namaFileFoto = fotoFileNameField.getText().trim();
 
         // --- Proses Simpan/Update ---
         if (wisata == null) { // Mode Tambah
@@ -252,7 +259,8 @@ public class WisataFormDialog extends JDialog {
         wisata.setJamOperasional(jamOperasional);
         wisata.setDeskripsi(deskripsi);
         wisata.setKategori(selectedKategori);
-        wisata.setDaftarFasilitas(selectedFasilitas); // Set daftar fasilitas yang baru dipilih
+        wisata.setDaftarFasilitas(selectedFasilitas);
+        wisata.setFotoPath(namaFileFoto); // <-- hanya nama file!
 
         try {
             if (wisata.getId() == 0) { // Baru
@@ -266,8 +274,7 @@ public class WisataFormDialog extends JDialog {
             dispose(); // Tutup dialog setelah berhasil
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menyimpan: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace(); // Log error untuk debugging
-            // Skenario Error Operasi Basis Data
+            ex.printStackTrace();
         }
     }
 

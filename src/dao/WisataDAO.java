@@ -35,7 +35,8 @@ public class WisataDAO {
                     rs.getString("lokasi"),
                     rs.getDouble("harga_tiket"),
                     rs.getString("jam_operasional"),
-                    kategori
+                    kategori,
+                    rs.getString("foto_path")
                 );
                 wisataList.add(wisata);
             }
@@ -72,7 +73,8 @@ public class WisataDAO {
                         rs.getString("lokasi"),
                         rs.getDouble("harga_tiket"),
                         rs.getString("jam_operasional"),
-                        kategori
+                        kategori,
+                        rs.getString("foto_path")
                     );
                     wisataList.add(wisata);
                 }
@@ -82,13 +84,9 @@ public class WisataDAO {
             e.printStackTrace();
         }
         return wisataList;
-
-
-
-    
     }
 
-    // ...existing code...
+
     
         public void deleteWisata(Wisata selectedWisata) throws SQLException {
             try (Connection conn = database.DatabaseManager.getConnection()) {
@@ -96,9 +94,6 @@ public class WisataDAO {
             }
         }
     
-    // ...existing code...
-
-    // ...existing code...}
         public void addWisata(Wisata wisata) throws SQLException {
             try (Connection conn = database.DatabaseManager.getConnection()) {
                 wisata.save(conn); // Pastikan Wisata punya method save(Connection)
@@ -113,4 +108,3 @@ public class WisataDAO {
         
     }
     
-    // ...existing code...  

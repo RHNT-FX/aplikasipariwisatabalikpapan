@@ -80,11 +80,7 @@ public class MainFrame extends JFrame {
         menuBar.add(dataMenu);
     }
 
-    /**
-     * Metode inti untuk mengganti panel yang ditampilkan di contentPanel.
-     * Dibuat private karena hanya akan dipanggil oleh metode navigasi publik.
-     * @param panel Panel yang akan ditampilkan.
-     */
+
     private void showPanel(JPanel panel) {
         contentPanel.removeAll();
         contentPanel.add(panel, BorderLayout.CENTER);
@@ -92,23 +88,13 @@ public class MainFrame extends JFrame {
         contentPanel.repaint();
     }
 
-    // --- METODE NAVIGASI PUBLIK ---
 
-    /**
-     * KODE BARU
-     * Menampilkan panel daftar wisata utama. Ini adalah "halaman utama" untuk pengguna.
-     */
     public void showWisataPanel() {
-        // Kita teruskan 'this' (instance MainFrame) ke WisataPanel
-        // agar WisataPanel bisa memanggil kembali MainFrame untuk navigasi.
+
         showPanel(new WisataPanel(this,currentUser));
     }
 
-    /**
-     * KODE BARU
-     * Menampilkan panel detail untuk wisata yang dipilih.
-     * @param wisata Objek Wisata yang akan ditampilkan.
-     */
+
     public void showDetailWisata(Wisata wisata) {
         // Teruskan objek wisata, user yang login, dan instance MainFrame
         DetailWisataPanel detailPanel = new DetailWisataPanel(wisata, this.currentUser, this);
